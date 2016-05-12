@@ -1,4 +1,4 @@
-(ns base-project.server-helpers
+(ns component-vs-mount.server-helpers
   (:require [clojure.tools.logging :as log]
             [clojure.data.json :as json]
             [clojure.java.io :as io]

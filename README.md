@@ -1,6 +1,6 @@
-# emacs-workshop-app
+# component-vs-mount
 
-FIXME
+Stub of web application, created with purpose of demonstrating Component and Mount models.
 
 ## Prerequisites
 
@@ -16,4 +16,4 @@ To start a web server for the application, run:
 
 ## License
 
-Copyright © 2016
+Copyright © 2016 Retailic

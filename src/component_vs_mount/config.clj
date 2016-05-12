@@ -1,4 +1,4 @@
-(ns base-project.config
+(ns component-vs-mount.config
   (:require [clojure.java.io :as io]
             [clojure.edn :as edn]
             [clojure.tools.logging :as log])
@@ -15,8 +15,12 @@
          (throw+ "Read config is not map.")))
      (throw+ (format "Config file %s does not exist." config-file)))))
 
+(def default-config  ; place for extending defaults
+  {:log-api-requests false
+   :db-file-path "resources/db/temp.db"})
+
 (defn load-default-config! []
-  (reset! cfg {:log-api-requests false})) ; place for extending defaults
+  (reset! cfg default-config))
 
 (defn get-config-var [arg]
   (@cfg arg))

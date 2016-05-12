@@ -1,4 +1,4 @@
-(defproject base-project "unused"
+(defproject component-vs-mount "unused"
   :description "FIXME: write description"
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/tools.logging "0.2.6"]
@@ -23,17 +23,18 @@
                  ;; database handling
                  [korma "0.4.0"]
                  [com.h2database/h2 "1.3.170"]
-                 [org.clojure/java.jdbc "0.3.5"]]
-  :repl-options {:init-ns base-project.app}
+                 [org.clojure/java.jdbc "0.3.5"]
+                 [com.stuartsierra/component "0.3.1"]]
+  :repl-options {:init-ns user}
   :plugins [[lein-git-version "0.0.10"]
             [cider/cider-nrepl "0.9.1"]]
   :global-vars {*warn-on-reflection* true}
   :hooks [leiningen.hooks.git-version]
-  :main base-project.main
+  :main component-vs-mount.main
   :profiles {:uberjar {:aot :all}
              :production {:ring {:open-browser? false
                                  :stacktraces?  false
                                  :auto-reload?  false}}
-             :dev {:dependencies [[ring-mock "0.1.5"]
-                                  [criterium "0.4.3"]]}}
+             :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]]
+                   :source-paths ["dev" "src"]}}
   :min-lein-version "2.0.0")

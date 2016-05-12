@@ -1,4 +1,4 @@
-(ns base-project.middleware
+(ns component-vs-mount.middleware
     (:require [clojure.tools.logging :as log]))
 
 ;;; FIXME: custom handlers

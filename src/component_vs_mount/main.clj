@@ -1,26 +1,52 @@
-(ns base-project.main
+(ns component-vs-mount.main
   (:gen-class)
   (:require [clojure.tools.cli :as cli]
             [clojure.tools.nrepl.server :as nrepl]
             [taoensso.encore :refer [parse-int]]
             [cider.nrepl :refer (cider-nrepl-handler)]
-            [base-project.app :as app]
-            [base-project.config :as config])
+            [component-vs-mount.app :as app]
+            [component-vs-mount.config :as config]
+            [com.stuartsierra.component :as component]
+            [component-vs-mount.model.db :as db])
   (:use ring.adapter.jetty
         ring.middleware.params)
   (:import [java.util Locale]))
 
+;;; TODO: remove when switched to component
 (defonce srv (atom nil))
 
+;;; TODO: remove when switched to component
 (defn start-server [port]
   (when-not @srv
     (reset! srv
             (run-jetty
              (fn [req] (app/main-app req))
-             {:port port :join? true}))))
+             {:port port :join? false}))))
 
-(defn- start-thread [f name]
-  (.start (Thread. f name)))
+(defrecord WebServer [port http-server app-component]
+  component/Lifecycle
+  (start [component]
+         (assoc component :http-server
+                ;; TODO: add server initialization from start-server
+                nil))
+  (stop [component]
+        (when http-server
+          (.stop http-server))
+        component))
+
+(defn web-server [port]
+  (map->WebServer {:port port}))
+
+(defn ->system [port cfg]
+  (component/system-map
+   ;; 0. config - managing from db might also be sensible
+   ;; 1. first and foremost: database
+   ;; :db 
+   ;; 2. handlers depend on database
+   ;; :app
+   ;; 3. and server depends on handler
+   ;; :server
+   ))
 
 ;; any addidtional configuration should go here
 (defn- handle-user-supplied-options! [options]
@@ -43,7 +69,9 @@
     (if config (config/load-config-from-file! config))
     (config/log-config)
     (handle-user-supplied-options! options)
-    (when nrepl (nrepl/start-server :port nrepl-port :handler cider-nrepl-handler))
-    (start-server (parse-int port))
-    ;; never reached (we hope)
-    (System/exit 1)))
+    ;; TODO: modify as to use server from component
+    (let [server (start-server (parse-int port))]
+      (when nrepl (nrepl/start-server :port nrepl-port :handler cider-nrepl-handler))
+      (.join server)
+      ;; never reached (we hope)
+      (System/exit 1))))
