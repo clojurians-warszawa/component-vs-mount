@@ -13,8 +13,16 @@
 (def wrap-custom-middleware (apply comp custom-middleware))
 
 ;;; TODO: add passing of component
-(def main-app
+#_(def main-app
   (-> (compojure/routes home-routes/routes)
+      wrap-params
+      wrap-json-params
+      wrap-keyword-params
+      wrap-log-exceptions
+      wrap-custom-middleware))
+
+(defn main-app [app-component]
+  (-> (compojure/routes (home-routes/routes app-component))
       wrap-params
       wrap-json-params
       wrap-keyword-params

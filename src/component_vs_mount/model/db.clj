@@ -43,11 +43,13 @@
          (log/info (format "Starting database, file path: %s" db-file-path))
          (let [db (korma.db/h2 {:db db-file-path})
                db-connection (jdbc/get-connection db)
-               db-spec-with-connection (assoc db :connection db-connection)])
-         ;; TODO: add connection to component
-         )
+               db-spec-with-connection (assoc db :connection db-connection)]
+           (assoc component :db-spec db-spec-with-connection)))
   (stop [component]
         (log/info "Closing database")
+        (when-let [conn (:connection db-spec)]
+          (.close conn))
+        (assoc component :db-spec nil)
         ;; TODO: retrieve connection
         ;; close it using (.close connection) method
         ;; clear association in component
@@ -59,8 +61,8 @@
 ;;; actual database-operating functions
 
 ;;; TODO: replace with component version
-(defn get-test-table-values []
-  (jdbc/query db ["select * from test_table"]))
+;; (defn get-test-table-values []
+;;   (jdbc/query db ["select * from test_table"]))
 
-#_(defn get-test-table-values [{:keys [db-spec] :as database}]
+(defn get-test-table-values [{:keys [db-spec] :as database}]
   (jdbc/query db-spec ["select * from test_table"]))

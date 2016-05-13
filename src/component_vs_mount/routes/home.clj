@@ -5,15 +5,15 @@
             [component-vs-mount.model.db :as db]))
 
 ;;; TODO: replace with component version
-(defroutes routes
-  (GET "/version" [] (constantly (json-response (read-version))))
-  (GET "/test-db" [] (fn [req] (json-response (db/get-test-table-values))))
-  (route/not-found "Not Found"))
+;; (defroutes routes
+;;   (GET "/version" [] (constantly (json-response (read-version))))
+;;   (GET "/test-db" [] (fn [req] (json-response (db/get-test-table-values))))
+;;   (route/not-found "Not Found"))
 
 (defn test-db-handler [{:keys [database] :as app-component} req]
-  (json-response (db/get-test-table-values database)))
+  (json-response "bla" #_(db/get-test-table-values database)))
 
-#_(defn routes [app-component]
+(defn routes [app-component]
   (compojure/routes
    (GET "/version" [] (constantly (json-response (read-version))))
    (GET "/test-db" [] (partial test-db-handler app-component))
